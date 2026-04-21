@@ -1,9 +1,37 @@
+/* ============================================================
+   KONFIGURASI — Ubah nama dan pengirim di sini
+   ============================================================ */
+const config = {
+    nama: 'Namamu',           // Ganti dengan nama penerima
+    nama_pengirim: 'Aku',     // Ganti dengan namamu
+};
+
+/* ============================================================
+   ISI TEKS DINAMIS (pengganti PHP)
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', function () {
+    const now = new Date();
+    const months = ['Januari','Februari','Maret','April','Mei','Juni',
+                    'Juli','Agustus','September','Oktober','November','Desember'];
+    const dateStr = now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+
+    const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+
+    set('welcome-name-display',   config.nama);
+    set('hero-name-display',      config.nama);
+    set('footer-title-display',   'Dari aku untukmu, ' + config.nama + ' 🌹');
+    set('footer-from-display',    '— Dengan sepenuh hati, ' + config.nama_pengirim);
+    set('footer-year-display',    now.getFullYear() + ' · Dibuat khusus untukmu ✨');
+    set('surat-date',             dateStr);
+    set('surat-opening',          config.nama + ' sayang,');
+
+    const sign = document.getElementById('surat-sign');
+    if (sign) sign.innerHTML = 'Dari aku yang selalu mendoakan yang terbaik buatmu,<br/><em>' + config.nama_pengirim + ' 💖</em>';
+});
 
 /* ============================================================
    INISIALISASI GLOBAL
    ============================================================ */
-
-// State global
 let currentSlide  = 0;
 let slideInterval = null;
 let musicPlaying  = false;
@@ -20,7 +48,6 @@ let heartsInterval = null;
 
     const ctx = canvas.getContext('2d');
 
-    // Ukuran kanvas mengikuti jendela
     function resize() {
         canvas.width  = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -28,18 +55,14 @@ let heartsInterval = null;
     resize();
     window.addEventListener('resize', resize);
 
-    // ---- Partikel (bintang & hati) ----
     const particles = [];
     const TOTAL = 90;
-
-    // Karakter yang akan ditampilkan
     const CHARS = ['★', '✦', '✧', '♡', '♥', '❤', '✨', '·'];
 
     function randomBetween(a, b) {
         return a + Math.random() * (b - a);
     }
 
-    // Buat partikel awal
     for (let i = 0; i < TOTAL; i++) {
         particles.push(createParticle(true));
     }
@@ -53,14 +76,12 @@ let heartsInterval = null;
             speed: randomBetween(0.4, 1.4),
             opacity: randomBetween(0.2, 0.9),
             drift: randomBetween(-0.4, 0.4),
-            // Warna: pink atau ungu
             hue:  Math.random() > 0.5
                   ? `hsl(${randomBetween(330, 360)}, 80%, ${randomBetween(70, 90)}%)`
                   : `hsl(${randomBetween(270, 310)}, 70%, ${randomBetween(75, 92)}%)`,
         };
     }
 
-    // Loop animasi
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -72,15 +93,12 @@ let heartsInterval = null;
             ctx.fillText(p.char, p.x, p.y);
             ctx.restore();
 
-            // Gerakkan partikel ke atas
             p.y -= p.speed;
             p.x += p.drift;
 
-            // Efek kedip halus
             p.opacity += (Math.random() - 0.5) * 0.03;
             p.opacity  = Math.min(0.9, Math.max(0.1, p.opacity));
 
-            // Reset jika keluar layar
             if (p.y < -30) {
                 particles[i] = createParticle(false);
             }
@@ -94,34 +112,22 @@ let heartsInterval = null;
 
 
 /* ============================================================
-   2. BUKA KEJUTAN — TRANSISI KE HALAMAN UTAMA
+   2. BUKA KEJUTAN
    ============================================================ */
 
-/**
- * Dipanggil saat tombol "Buka Kejutan 🎁" diklik.
- * Menjalankan confetti, kemudian slide ke halaman utama.
- */
 function bukaKejutan() {
-    // Tembakkan confetti meriah
     launchConfetti(200);
 
     const welcomePage = document.getElementById('welcome-page');
     const mainPage    = document.getElementById('main-page');
 
-    // Delay sedikit agar confetti terlihat
     setTimeout(() => {
-        // Fade out welcome page
         welcomePage.classList.add('fade-out');
 
         setTimeout(() => {
-            // Sembunyikan welcome, tampilkan main
             welcomePage.classList.add('hidden');
             mainPage.classList.remove('hidden');
-
-            // Mulai efek-efek halaman utama
             initMainPage();
-
-            // Scroll ke atas
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }, 900);
     }, 300);
@@ -133,19 +139,11 @@ function bukaKejutan() {
    ============================================================ */
 
 function initMainPage() {
-    // Mulai slideshow foto
     initSlideshow();
-
-    // Mulai falling hearts
     startFallingHearts();
-
-    // Mulai countdown timer
     initTimer();
-
-    // Aktifkan animasi scroll (AOS sederhana)
     initAOS();
 
-    // Coba auto-play musik (browser mungkin memblokir)
     const audio = document.getElementById('bg-music');
     if (audio) {
         audio.play()
@@ -154,7 +152,6 @@ function initMainPage() {
                 updateMusicUI();
             })
             .catch(() => {
-                // Autoplay diblokir browser — OK, user bisa klik manual
                 console.info('Autoplay diblokir. Klik tombol musik untuk play.');
             });
     }
@@ -171,7 +168,6 @@ function initSlideshow() {
 
     if (!slides.length || !dotsWrap) return;
 
-    // Buat titik navigasi
     slides.forEach((_, i) => {
         const dot = document.createElement('span');
         dot.className = 'dot' + (i === 0 ? ' active' : '');
@@ -179,13 +175,9 @@ function initSlideshow() {
         dotsWrap.appendChild(dot);
     });
 
-    // Auto-slide setiap 3.5 detik
     slideInterval = setInterval(() => changeSlide(1), 3500);
 }
 
-/**
- * Pindah slide: +1 = next, -1 = prev
- */
 function changeSlide(direction) {
     const slides = document.querySelectorAll('.slide');
     const dots   = document.querySelectorAll('.slide-dots .dot');
@@ -212,7 +204,6 @@ function goToSlide(index) {
     slides[currentSlide].classList.add('active');
     dots[currentSlide]?.classList.add('active');
 
-    // Reset interval agar tidak loncat
     clearInterval(slideInterval);
     slideInterval = setInterval(() => changeSlide(1), 3500);
 }
@@ -222,9 +213,6 @@ function goToSlide(index) {
    5. MUSIK PLAYER
    ============================================================ */
 
-/**
- * Toggle play/pause musik latar
- */
 function toggleMusic() {
     const audio = document.getElementById('bg-music');
     if (!audio) return;
@@ -240,9 +228,6 @@ function toggleMusic() {
     updateMusicUI();
 }
 
-/**
- * Perbarui tampilan ikon musik
- */
 function updateMusicUI() {
     const icon  = document.getElementById('music-icon');
     const label = document.getElementById('music-label');
@@ -250,11 +235,11 @@ function updateMusicUI() {
     if (musicPlaying) {
         icon.textContent  = '♫';
         icon.classList.add('playing');
-        label.textContent = 'Memutar Lagu 🎵';
+        if (label) label.textContent = 'Memutar Lagu 🎵';
     } else {
         icon.textContent  = '♪';
         icon.classList.remove('playing');
-        label.textContent = 'Lagu Cinta Kita';
+        if (label) label.textContent = 'Lagu Cinta Kita';
     }
 }
 
@@ -263,23 +248,15 @@ function updateMusicUI() {
    6. POPUP SURAT CINTA
    ============================================================ */
 
-/**
- * Buka popup surat cinta
- */
 function bukaSurat() {
     const popup = document.getElementById('popup-surat');
     if (!popup) return;
 
     popup.classList.remove('hidden');
-    document.body.style.overflow = 'hidden'; // Cegah scroll background
+    document.body.style.overflow = 'hidden';
 }
 
-/**
- * Tutup popup surat cinta
- * @param {Event|undefined} event - event klik (opsional)
- */
 function tutupSurat(event) {
-    // Jika event ada, hanya tutup jika klik di overlay (bukan di dalam box)
     if (event && event.target !== document.getElementById('popup-surat')) return;
 
     const popup = document.getElementById('popup-surat');
@@ -294,11 +271,6 @@ function tutupSurat(event) {
    7. LIGHTBOX GALERI
    ============================================================ */
 
-/**
- * Buka lightbox dengan gambar tertentu
- * @param {string} src     - URL gambar
- * @param {string} caption - Keterangan gambar
- */
 function bukaLightbox(src, caption) {
     const lightbox = document.getElementById('lightbox');
     const img      = document.getElementById('lightbox-img');
@@ -314,9 +286,6 @@ function bukaLightbox(src, caption) {
     document.body.style.overflow = 'hidden';
 }
 
-/**
- * Tutup lightbox galeri
- */
 function tutupLightbox() {
     const lightbox = document.getElementById('lightbox');
     if (!lightbox) return;
@@ -325,7 +294,6 @@ function tutupLightbox() {
     document.body.style.overflow = '';
 }
 
-// Tutup dengan tombol Escape
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         tutupSurat();
@@ -335,7 +303,7 @@ document.addEventListener('keydown', function(e) {
 
 
 /* ============================================================
-   8. COUNTDOWN TIMER — SEJAK TANGGAL JADIAN
+   8. COUNTDOWN TIMER
    ============================================================ */
 
 function initTimer() {
@@ -346,14 +314,13 @@ function initTimer() {
 
     function update() {
         const now  = new Date();
-        const diff = now - tanggalJadian; // milidetik
+        const diff = now - tanggalJadian;
 
         if (diff < 0) {
-            // Tanggal jadian di masa depan (tidak valid)
-            document.getElementById('timer-hari').textContent   = '0';
-            document.getElementById('timer-jam').textContent    = '0';
-            document.getElementById('timer-menit').textContent  = '0';
-            document.getElementById('timer-detik').textContent  = '0';
+            ['timer-hari','timer-jam','timer-menit','timer-detik'].forEach(id => {
+                const e = document.getElementById(id);
+                if (e) e.textContent = '0';
+            });
             return;
         }
 
@@ -362,29 +329,18 @@ function initTimer() {
         const totalJam    = Math.floor(totalMenit / 60);
         const totalHari   = Math.floor(totalJam / 24);
 
-        const detik = totalDetik % 60;
-        const menit = totalMenit % 60;
-        const jam   = totalJam   % 24;
-        const hari  = totalHari;
-
-        // Update elemen dengan animasi angka
-        animateCounter('timer-hari',   hari);
-        animateCounter('timer-jam',    jam);
-        animateCounter('timer-menit',  menit);
-        animateCounter('timer-detik',  detik);
+        animateCounter('timer-hari',   totalHari);
+        animateCounter('timer-jam',    totalJam % 24);
+        animateCounter('timer-menit',  totalMenit % 60);
+        animateCounter('timer-detik',  totalDetik % 60);
     }
 
-    // Jalankan sekarang dan setiap detik
     update();
     setInterval(update, 1000);
 }
 
-/** Cache nilai sebelumnya untuk animasi */
 const prevValues = {};
 
-/**
- * Animasikan perubahan angka counter
- */
 function animateCounter(id, newValue) {
     const el = document.getElementById(id);
     if (!el) return;
@@ -405,27 +361,18 @@ function animateCounter(id, newValue) {
 
 
 /* ============================================================
-   9. FALLING HEARTS — HATI JATUH
+   9. FALLING HEARTS
    ============================================================ */
 
 const HEART_CHARS = ['💖', '💕', '💗', '💓', '💝', '🌸', '✨', '💫', '🌷', '❤️'];
 
-/**
- * Mulai animasi hati jatuh secara berkala
- */
 function startFallingHearts() {
-    // Spawn satu hati setiap 1.2 detik
     heartsInterval = setInterval(spawnHeart, 1200);
-
-    // Spawn beberapa sekaligus di awal
     for (let i = 0; i < 6; i++) {
         setTimeout(spawnHeart, i * 250);
     }
 }
 
-/**
- * Buat satu elemen hati jatuh
- */
 function spawnHeart() {
     const container = document.getElementById('hearts-container');
     if (!container) return;
@@ -434,24 +381,20 @@ function spawnHeart() {
     heart.className   = 'falling-heart';
     heart.textContent = HEART_CHARS[Math.floor(Math.random() * HEART_CHARS.length)];
 
-    // Posisi horizontal acak
     heart.style.left      = Math.random() * 100 + 'vw';
     heart.style.fontSize  = (Math.random() * 1.2 + 0.8) + 'rem';
     heart.style.opacity   = (Math.random() * 0.5 + 0.3).toFixed(2);
 
-    // Durasi jatuh acak (6–14 detik)
     const duration  = Math.random() * 8 + 6;
     heart.style.animationDuration = duration + 's';
 
     container.appendChild(heart);
-
-    // Hapus setelah animasi selesai
     setTimeout(() => heart.remove(), duration * 1000 + 500);
 }
 
 
 /* ============================================================
-  10. CONFETTI
+   10. CONFETTI
    ============================================================ */
 
 const CONFETTI_COLORS = [
@@ -461,10 +404,6 @@ const CONFETTI_COLORS = [
     '#80deea', '#4dd0e1',
 ];
 
-/**
- * Tembakkan confetti
- * @param {number} count - Jumlah serpihan confetti
- */
 function launchConfetti(count = 100) {
     const container = document.getElementById('confetti-container');
     if (!container) return;
@@ -474,7 +413,6 @@ function launchConfetti(count = 100) {
             const piece = document.createElement('div');
             piece.className = 'confetti-piece';
 
-            // Posisi dan gaya acak
             piece.style.left            = Math.random() * 100 + 'vw';
             piece.style.background      = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
             piece.style.width           = (Math.random() * 10 + 6) + 'px';
@@ -487,8 +425,6 @@ function launchConfetti(count = 100) {
             piece.style.animationDelay    = (Math.random() * 0.5) + 's';
 
             container.appendChild(piece);
-
-            // Bersihkan setelah animasi
             setTimeout(() => piece.remove(), (duration + 0.5) * 1000);
         }, i * 15);
     }
@@ -496,7 +432,7 @@ function launchConfetti(count = 100) {
 
 
 /* ============================================================
-  11. AOS — ANIMATE ON SCROLL (SEDERHANA)
+   11. AOS — ANIMATE ON SCROLL
    ============================================================ */
 
 function initAOS() {
@@ -507,7 +443,6 @@ function initAOS() {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('aos-animate');
-                // Hanya animasi sekali
                 observer.unobserve(entry.target);
             }
         });
@@ -521,7 +456,7 @@ function initAOS() {
 
 
 /* ============================================================
-  12. SMOOTH SCROLL UNTUK LINK ANCHOR
+   12. SMOOTH SCROLL
    ============================================================ */
 
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -536,7 +471,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 
 /* ============================================================
-  13. EASTER EGG — Klik logo/judul untuk confetti kecil
+   13. EASTER EGG — Double click untuk confetti
    ============================================================ */
 
 document.addEventListener('dblclick', function() {
@@ -545,7 +480,7 @@ document.addEventListener('dblclick', function() {
 
 
 /* ============================================================
-  14. STYLE TRANSISI COUNTER (injeksi inline untuk performa)
+   14. STYLE TRANSISI COUNTER
    ============================================================ */
 
 (function injectCounterStyle() {
@@ -557,15 +492,3 @@ document.addEventListener('dblclick', function() {
     `;
     document.head.appendChild(style);
 })();
-
-let music = document.getElementById("music");
-let isPlaying = false;
-
-function toggleMusic() {
-    if (isPlaying) {
-        music.pause();
-    } else {
-        music.play();
-    }
-    isPlaying = !isPlaying;
-}
