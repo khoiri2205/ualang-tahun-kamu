@@ -154,6 +154,12 @@ function initMainPage() {
             .catch(() => {
                 console.info('Autoplay diblokir. Klik tombol musik untuk play.');
             });
+
+        // Kalau file MP3 error (tidak ditemukan), fallback ke YouTube
+        audio.addEventListener('error', function() {
+            console.warn('File MP3 tidak ditemukan, beralih ke YouTube...');
+            useYouTubeFallback();
+        });
     }
 }
 
@@ -215,17 +221,51 @@ function goToSlide(index) {
 
 function toggleMusic() {
     const audio = document.getElementById('bg-music');
+    const ytFrame = document.getElementById('yt-fallback');
+    
+    if (usingYT) {
+        // Mode YouTube
+        if (musicPlaying) {
+            ytFrame.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+            musicPlaying = false;
+        } else {
+            ytFrame.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+            musicPlaying = true;
+        }
+        updateMusicUI();
+        return;
+    }
+
     if (!audio) return;
 
     if (musicPlaying) {
         audio.pause();
         musicPlaying = false;
     } else {
-        audio.play().catch(e => console.warn('Musik gagal diputar:', e));
+        audio.play().catch(e => {
+            console.warn('Musik gagal diputar:', e);
+            useYouTubeFallback();
+        });
         musicPlaying = true;
     }
 
     updateMusicUI();
+}
+
+let usingYT = false;
+
+function useYouTubeFallback() {
+    usingYT = true;
+    const ytFrame = document.getElementById('yt-fallback');
+    if (ytFrame) {
+        ytFrame.style.display = 'none';
+        // Trigger autoplay via postMessage
+        setTimeout(() => {
+            ytFrame.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+            musicPlaying = true;
+            updateMusicUI();
+        }, 1000);
+    }
 }
 
 function updateMusicUI() {
