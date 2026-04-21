@@ -1,9 +1,12 @@
 /* ============================================================
-   KONFIGURASI — Ubah nama dan pengirim di sini
+   KONFIGURASI — Nama diambil otomatis dari URL
+   Contoh pakai: https://namakamu.github.io/repo/?nama=Sinta&dari=Raka
+   Atau edit langsung default di bawah ini:
    ============================================================ */
+const params        = new URLSearchParams(window.location.search);
 const config = {
-    nama: 'Namamu',           // Ganti dengan nama penerima
-    nama_pengirim: 'Aku',     // Ganti dengan namamu
+    nama:         params.get('nama')  || 'CC',   // ?nama=Sinta
+    nama_pengirim: params.get('dari') || 'Larendra',      // ?dari=Raka
 };
 
 /* ============================================================
