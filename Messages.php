@@ -1,0 +1,67 @@
+<?php
+// ============================================================
+// messages.php — Backend PHP: Data Pesan Ucapan
+// ============================================================
+// File ini berfungsi sebagai "database" sederhana menggunakan
+// array PHP. Tambahkan pesan ucapan di sini sesuai kebutuhan.
+// ============================================================
+
+/**
+ * Fungsi getMessages()
+ * Mengembalikan array berisi daftar pesan ucapan ulang tahun.
+ * Setiap pesan memiliki: nama, pesan, dan emoji.
+ *
+ * @return array
+ */
+function getMessages(): array {
+    return [
+        // ---- Pesan 1 (dari pasangan) ----
+        [
+            'nama'  => 'Kamu (Pacarmu)',
+            'pesan' => 'Selamat ulang tahun, sayangku. Terima kasih sudah menjadi bagian terindah dari hidupku. Aku tidak bisa membayangkan hari-hari tanpa senyummu. Semoga hari ini dan setiap hari berikutnya penuh kebahagiaan. I love you to the moon and back! 🌙',
+            'emoji' => '💕',
+        ],
+
+        // ---- Pesan 2 ----
+        [
+            'nama'  => 'Mama',
+            'pesan' => 'Nak, terima kasih sudah tumbuh menjadi perempuan yang kuat, cantik, dan penuh kasih sayang. Mama bangga dengan kamu setiap hari. Semoga di usiamu yang baru ini, semua doamu terkabul. Happy birthday, sayang!',
+            'emoji' => '🌸',
+        ],
+
+        // ---- Pesan 3 ----
+        [
+            'nama'  => 'Papa',
+            'pesan' => 'Selamat ulang tahun, putri kecil Papa. Meski sekarang kamu sudah dewasa, di mata Papa kamu selalu menjadi cahaya yang paling bersinar. Jaga diri selalu, ya. Papa selalu mendoakanmu.',
+            'emoji' => '⭐',
+        ],
+
+        // ---- Pesan 4 ----
+        [
+            'nama'  => 'Sahabat Terbaik',
+            'pesan' => 'HAPPY BIRTHDAY bestie! 🎉 Semoga tahun ini makin glowing, makin bahagia, dan semua hal baik datang menghampirimu. Kamu layak mendapatkan yang terbaik dari dunia ini. Love you, bestie!',
+            'emoji' => '🎊',
+        ],
+
+        // ---- Pesan 5 ----
+        [
+            'nama'  => 'Saudara',
+            'pesan' => 'Selamat ulang tahun, kakak/adik tersayang! Semoga selalu sehat, bahagia, dan impian-impianmu satu per satu terwujud. Kamu adalah inspirasi bagi kami semua. 🌺',
+            'emoji' => '🌺',
+        ],
+
+        // ---- Pesan 6 ----
+        [
+            'nama'  => 'Teman Kuliah',
+            'pesan' => 'Met ultah! Semoga sukses selalu dan segala urusan dipermudah. Kamu adalah orang paling rajin dan penuh semangat yang pernah aku kenal. Keep shining! ✨',
+            'emoji' => '✨',
+        ],
+
+        // ---- Tambahkan pesan baru di bawah ini ----
+        // [
+        //     'nama'  => 'Nama Pengirim',
+        //     'pesan' => 'Isi pesan di sini...',
+        //     'emoji' => '💖',
+        // ],
+    ];
+}

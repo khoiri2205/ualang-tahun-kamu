@@ -1,0 +1,227 @@
+<?php
+// ============================================================
+// index.php — Halaman Utama Website Ulang Tahun
+// ============================================================
+
+// Include data pesan ucapan dari PHP backend
+require_once 'messages.php';
+
+// ============================================================
+// KONFIGURASI — Edit bagian ini sesuai kebutuhan
+// ============================================================
+$config = [
+    'nama'           => 'CC',          // Nama pacar
+    'nama_pengirim'  => 'Larendra',            // Nama pengirim
+    'tanggal_lahir'  => '2008-04-21',      // Format: YYYY-MM-DD (ulang tahun hari ini)
+];
+
+// Ambil pesan ucapan dari array (backend PHP)
+$messages = getMessages();
+?>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Selamat Ulang Tahun <?= htmlspecialchars($config['nama']) ?> 🎂</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lato:wght@300;400;700&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet" />
+
+    <!-- Stylesheet utama -->
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- HALAMAN PEMBUKA (WELCOME PAGE)                               -->
+<!-- ============================================================ -->
+<div id="welcome-page">
+
+    <!-- Kanvas animasi bintang & love -->
+    <canvas id="welcome-canvas"></canvas>
+
+    <!-- Konten tengah welcome page -->
+    <div class="welcome-content">
+        <div class="welcome-badge">✨ Hari Istimewamu ✨</div>
+        <h1 class="welcome-title">Selamat<br/>Ulang Tahun</h1>
+        <h2 class="welcome-name"><?= htmlspecialchars($config['nama']) ?></h2>
+        <p class="welcome-sub">Semoga hari ini menjadi hari yang paling indah<br/>dalam hidupmu, sayangku 🌸</p>
+        <button id="btn-buka-kejutan" class="btn-primary pulse-btn" onclick="bukaKejutan()">
+            Buka Kejutan 🎁
+        </button>
+    </div>
+
+    <!-- Dekorasi lingkaran blur -->
+    <div class="blur-circle bc1"></div>
+    <div class="blur-circle bc2"></div>
+    <div class="blur-circle bc3"></div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- HALAMAN UTAMA (MAIN PAGE)                                    -->
+<!-- ============================================================ -->
+<div id="main-page" class="hidden">
+
+    <!-- ---- FALLING HEARTS CONTAINER ---- -->
+    <div id="hearts-container"></div>
+
+    <!-- ---- MUSIC PLAYER ---- -->
+    <div id="music-player">
+        <button id="btn-music" onclick="toggleMusic()" title="Play/Pause Musik">
+            <span id="music-icon">♪</span>
+        </button>
+        <span id="music-label"><div class="play-btn" onclick="toggleMusic()"></div>
+
+<audio id="music">
+    <source src="lagu.mp3" type="audio/mp3">
+</audio></span>
+    </div>
+
+    <!-- Audio elemen (ganti src dengan lagu romantis) -->
+    <audio id="bg-music" loop>
+        <!--
+            Ganti src di bawah ini dengan URL lagu romantis kamu,
+            misalnya: src="musik/lagu.mp3"
+            File audio bisa diletakkan di folder /musik/
+        -->
+        <source src="Stephen Sanchez - Until I Found You (Lyrics) - (320 Kbps).mp3" type="audio/mpeg" />
+    </audio>
+
+    <!-- ============================================================ -->
+    <!-- SECTION 1: HERO / UCAPAN                                     -->
+    <!-- ============================================================ -->
+    <section id="section-hero" class="section">
+        <div class="container">
+            <div class="hero-inner">
+                <!-- Foto utama / slideshow -->
+                <div class="slideshow-wrapper" data-aos="fade-right">
+                    <div class="slideshow" id="slideshow">
+                        <!--
+                            Ganti src gambar di bawah dengan foto asli.
+                            Taruh foto di folder /foto/ lalu ubah src="foto/foto1.jpg"
+                        -->
+                        <img src="1.jpeg"   class="slide active" alt="Foto 1" />
+                        <img src="2.jpeg" class="slide"        alt="Foto 2" />
+                        <img src="3.jpeg"   class="slide"        alt="Foto 3" />
+
+                        <button class="slide-btn prev" onclick="changeSlide(-1)">&#8249;</button>
+                        <button class="slide-btn next" onclick="changeSlide(1)">&#8250;</button>
+
+                        <div class="slide-dots" id="slide-dots"></div>
+                    </div>
+                </div>
+
+                <!-- Ucapan utama -->
+                <div class="hero-text" data-aos="fade-left">
+                    <span class="section-tag">🎂 Hari Spesialmu</span>
+                    <h2 class="hero-title">
+                        Happy Birthday,<br/>
+                        <em><?= htmlspecialchars($config['nama']) ?></em>
+                    </h2>
+                    <p class="hero-desc">
+                        Kamu punya peran penting di hari-hariku, 
+                        bikin semuanya terasa lebih ringan, dan selalu jadi tempat yang nyaman buatku.
+                    </p>
+                    <p class="hero-desc">
+                        Semoga di usiamu yang baru ini, segala impianmu menjadi nyata,
+                        segala doamu dikabulkan, dan kebahagiaan selalu menemanimu
+                        di setiap langkah.🌹
+                    </p>
+
+                    <!-- Tombol Surat Cinta -->
+                    <button class="btn-love" onclick="bukaSurat()">
+                        Baca Suratnya yaa 💌
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- FOOTER                                                       -->
+    <!-- ============================================================ -->
+    <footer id="footer">
+        <div class="footer-hearts">💖 💕 💗 💓 💞</div>
+        <h3 class="footer-title">
+            Dari aku untukmu, <?= htmlspecialchars($config['nama']) ?> 🌹
+        </h3>
+        <p class="footer-from">
+            — Dengan sepenuh hati, <?= htmlspecialchars($config['nama_pengirim']) ?>
+        </p>
+        <p class="footer-year"><?= date('Y') ?> · Dibuat khusus untukmu ✨</p>
+    </footer>
+
+</div><!-- #main-page -->
+
+
+<!-- ============================================================ -->
+<!-- POPUP: SURAT CINTA                                           -->
+<!-- ============================================================ -->
+<div id="popup-surat" class="popup-overlay hidden" onclick="tutupSurat(event)">
+    <div class="popup-box" id="popup-box-surat">
+        <button class="popup-close" onclick="tutupSurat()">✕</button>
+
+        <div class="popup-header">
+            <div class="popup-icon">💌</div>
+            <h3 class="popup-title">Surat Untukmu</h3>
+            <p class="popup-date"><?= date('d F Y') ?></p>
+        </div>
+
+        <div class="popup-content">
+            <p>
+                <?= htmlspecialchars($config['nama']) ?> sayang,
+            </p>
+            <p>
+                Setiap ngobrol sama kamu itu selalu jadi hal yang menyenangkan, 
+                walaupun kita cuma kenal dari online dan belum pernah ketemu langsung.
+            </p>
+            <p>
+                Aku gak nyangka, dari awalnya cuma chat biasa, bisa jadi sesering ini tukar cerita. 
+                Kamu tuh enak diajak ngobrol, dan kadang bisa bikin hari yang biasa aja jadi lebih seru.
+            </p>
+            <p>
+                Di hari ulang tahunmu ini, aku cuma mau doain yang terbaik buat kamu. 
+                Semoga semua hal yang kamu lagi usahain bisa berjalan lancar, dan semoga kamu selalu punya alasan buat senyum.
+            </p>
+            <p>
+                Walaupun kita belum pernah ketemu, aku tetap bersyukur bisa kenal kamu sejauh ini.
+            </p>
+            <p>
+                Selamat ulang tahun ya. Semoga harimu menyenangkan dan penuh hal-hal baik 🎉
+            </p>
+            <p class="letter-sign">
+                Dari aku yang selalu mendoakan yang terbaik buatmu,<br/>
+                <em><?= htmlspecialchars($config['nama_pengirim']) ?> 💖</em>
+            </p>
+        </div>
+    </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- LIGHTBOX GALERI                                              -->
+<!-- ============================================================ -->
+<div id="lightbox" class="popup-overlay hidden" onclick="tutupLightbox()">
+    <div class="lightbox-box">
+        <button class="popup-close" onclick="tutupLightbox()">✕</button>
+        <img id="lightbox-img" src="" alt="" />
+        <p id="lightbox-caption"></p>
+    </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- CONFETTI CONTAINER                                           -->
+<!-- ============================================================ -->
+<div id="confetti-container"></div>
+
+
+<!-- Script utama -->
+<script src="script.js"></script>
+
+</body>
+</html>
