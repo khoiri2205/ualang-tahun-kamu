@@ -1,36 +1,91 @@
 /* ============================================================
-   KONFIGURASI — Nama diambil otomatis dari URL
-   Contoh pakai: https://namakamu.github.io/repo/?nama=Sinta&dari=Raka
-   Atau edit langsung default di bawah ini:
+   KONFIGURASI — Diisi dari halaman input nama
    ============================================================ */
-const params        = new URLSearchParams(window.location.search);
 const config = {
-    nama:         params.get('CC')  || 'CC',   // ?nama=Sinta
-    nama_pengirim: params.get('Larendra') || 'Larendra',      // ?dari=Raka
+    nama:          'Namamu',
+    nama_pengirim: 'Aku',
 };
 
 /* ============================================================
-   ISI TEKS DINAMIS (pengganti PHP)
+   HALAMAN INPUT NAMA — Animasi canvas & fungsi mulai
    ============================================================ */
-document.addEventListener('DOMContentLoaded', function () {
+(function initInputCanvas() {
+    const canvas = document.getElementById('input-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    resize();
+    window.addEventListener('resize', resize);
+    const CHARS = ['★','✦','♡','♥','✨','·','❤'];
+    const particles = Array.from({length: 60}, () => ({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        char: CHARS[Math.floor(Math.random() * CHARS.length)],
+        size: 8 + Math.random() * 16,
+        speed: 0.3 + Math.random() * 0.9,
+        opacity: 0.15 + Math.random() * 0.5,
+        drift: (Math.random() - 0.5) * 0.3,
+        hue: Math.random() > 0.5
+            ? `hsl(${330 + Math.random()*30}, 80%, ${70 + Math.random()*20}%)`
+            : `hsl(${270 + Math.random()*40}, 70%, ${75 + Math.random()*17}%)`,
+    }));
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((p, i) => {
+            ctx.save(); ctx.globalAlpha = p.opacity;
+            ctx.fillStyle = p.hue; ctx.font = p.size + 'px serif';
+            ctx.fillText(p.char, p.x, p.y); ctx.restore();
+            p.y -= p.speed; p.x += p.drift;
+            if (p.y < -20) { p.y = canvas.height + 10; p.x = Math.random() * canvas.width; }
+        });
+        requestAnimationFrame(draw);
+    }
+    draw();
+})();
+
+function mulaiKejutan() {
+    const namaInput = document.getElementById('input-nama');
+    const dariInput = document.getElementById('input-dari');
+
+    const nama = (namaInput.value.trim()) || 'Kamu';
+    const dari = (dariInput.value.trim()) || 'Aku';
+
+    config.nama          = nama;
+    config.nama_pengirim = dari;
+
+    // Isi semua teks nama
+    const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
     const now = new Date();
     const months = ['Januari','Februari','Maret','April','Mei','Juni',
                     'Juli','Agustus','September','Oktober','November','Desember'];
     const dateStr = now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
 
-    const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
-
-    set('welcome-name-display',   config.nama);
-    set('hero-name-display',      config.nama);
-    set('footer-title-display',   'Dari aku untukmu, ' + config.nama + ' 🌹');
-    set('footer-from-display',    '— Dengan sepenuh hati, ' + config.nama_pengirim);
-    set('footer-year-display',    now.getFullYear() + ' · Dibuat khusus untukmu ✨');
-    set('surat-date',             dateStr);
-    set('surat-opening',          config.nama + ' sayang,');
-
+    set('welcome-name-display', nama);
+    set('hero-name-display',    nama);
+    set('footer-title-display', 'Dari aku untukmu, ' + nama + ' 🌹');
+    set('footer-from-display',  '— Dengan sepenuh hati, ' + dari);
+    set('footer-year-display',  now.getFullYear() + ' · Dibuat khusus untukmu ✨');
+    set('surat-date',           dateStr);
+    set('surat-opening',        nama + ' sayang,');
     const sign = document.getElementById('surat-sign');
-    if (sign) sign.innerHTML = 'Dari aku yang selalu mendoakan yang terbaik buatmu,<br/><em>' + config.nama_pengirim + ' 💖</em>';
-});
+    if (sign) sign.innerHTML = 'Dari aku yang selalu mendoakan yang terbaik buatmu,<br/><em>' + dari + ' 💖</em>';
+
+    // Transisi keluar halaman input, masuk welcome
+    const inputPage   = document.getElementById('name-input-page');
+    const welcomePage = document.getElementById('welcome-page');
+
+    inputPage.classList.add('fade-exit');
+    setTimeout(() => {
+        inputPage.style.display = 'none';
+        welcomePage.classList.remove('hidden');
+        // Init canvas welcome
+        initWelcomeCanvas();
+    }, 700);
+}
+
+/* ============================================================
+   ISI TEKS DINAMIS — Dihandle oleh mulaiKejutan()
+   ============================================================ */
 
 /* ============================================================
    INISIALISASI GLOBAL
@@ -45,7 +100,7 @@ let heartsInterval = null;
    1. KANVAS WELCOME — ANIMASI BINTANG & LOVE
    ============================================================ */
 
-(function initWelcomeCanvas() {
+function initWelcomeCanvas() {
     const canvas = document.getElementById('welcome-canvas');
     if (!canvas) return;
 
@@ -111,7 +166,7 @@ let heartsInterval = null;
     }
 
     draw();
-})();
+}
 
 
 /* ============================================================
@@ -519,6 +574,18 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 document.addEventListener('dblclick', function() {
     launchConfetti(50);
+});
+
+/* ============================================================
+   ENTER KEY — di halaman input nama
+   ============================================================ */
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        const inputPage = document.getElementById('name-input-page');
+        if (inputPage && inputPage.style.display !== 'none' && !inputPage.classList.contains('fade-exit')) {
+            mulaiKejutan();
+        }
+    }
 });
 
 
