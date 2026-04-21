@@ -58,9 +58,16 @@
     </div>
 
     <!-- Audio elemen -->
-    <audio id="bg-music" loop>
+    <audio id="bg-music" loop preload="auto">
         <source src="music.mp3" type="audio/mpeg" />
     </audio>
+    <!-- YouTube fallback player (hidden) -->
+    <iframe id="yt-fallback" 
+        src="https://www.youtube.com/embed/yvzSAkrVeAs?autoplay=0&loop=1&playlist=yvzSAkrVeAs&enablejsapi=1" 
+        style="display:none" 
+        allow="autoplay"
+        title="music">
+    </iframe>
 
     <!-- ============================================================ -->
     <!-- SECTION 1: HERO / UCAPAN                                     -->
