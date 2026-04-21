@@ -4,37 +4,152 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Selamat Ulang Tahun 🎂</title>
-
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lato:wght@300;400;700&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet" />
-
-    <!-- Stylesheet utama -->
     <link rel="stylesheet" href="style.css" />
+
+    <style>
+        /* ===== HALAMAN INPUT NAMA ===== */
+        #name-input-page {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: linear-gradient(135deg, #2d1b4e 0%, #4a1942 50%, #1a0a2e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #name-input-page canvas {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+        .input-card {
+            position: relative;
+            z-index: 2;
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 28px;
+            padding: 48px 40px;
+            text-align: center;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+        .input-card .emoji-top {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+        .input-card h2 {
+            font-family: 'Playfair Display', serif;
+            color: #fff;
+            font-size: 1.8rem;
+            margin: 0 0 6px;
+        }
+        .input-card p {
+            color: rgba(255,255,255,0.65);
+            font-family: 'Lato', sans-serif;
+            font-size: 0.95rem;
+            margin: 0 0 28px;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+        .input-group label {
+            font-family: 'Lato', sans-serif;
+            font-size: 0.78rem;
+            color: rgba(255,255,255,0.55);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-top: 8px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 14px;
+            border: 1.5px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.25rem;
+            outline: none;
+            transition: border-color 0.3s, background 0.3s;
+            box-sizing: border-box;
+        }
+        .input-group input::placeholder { color: rgba(255,255,255,0.3); }
+        .input-group input:focus {
+            border-color: #f48fb1;
+            background: rgba(255,255,255,0.15);
+        }
+        .btn-mulai {
+            width: 100%;
+            padding: 16px;
+            border-radius: 50px;
+            border: none;
+            background: linear-gradient(135deg, #e91e63, #9c27b0);
+            color: #fff;
+            font-family: 'Lato', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 0.04em;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 8px 24px rgba(233,30,99,0.4);
+        }
+        .btn-mulai:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(233,30,99,0.55); }
+        .btn-mulai:active { transform: scale(0.97); }
+        #name-input-page.fade-exit { animation: pgFadeOut 0.7s ease forwards; }
+        @keyframes pgFadeOut { to { opacity: 0; transform: scale(1.04); } }
+    </style>
 </head>
 <body>
 
 <!-- ============================================================ -->
+<!-- HALAMAN INPUT NAMA                                           -->
+<!-- ============================================================ -->
+<div id="name-input-page">
+    <canvas id="input-canvas"></canvas>
+    <div class="input-card">
+        <span class="emoji-top">🎂</span>
+        <h2>Untuk Siapa?</h2>
+        <p>Masukkan nama penerima &amp; pengirim dulu ya</p>
+
+        <div class="input-group">
+            <label>Nama Penerima 🌸</label>
+            <input type="text" id="input-nama" placeholder="Nama dia..." maxlength="30" />
+            <label>Nama Pengirim (kamu) 💌</label>
+            <input type="text" id="input-dari" placeholder="Namamu..." maxlength="30" />
+        </div>
+
+        <button class="btn-mulai" onclick="mulaiKejutan()">
+            Buka Kejutan 🎁
+        </button>
+    </div>
+</div>
+
+
+<!-- ============================================================ -->
 <!-- HALAMAN PEMBUKA (WELCOME PAGE)                               -->
 <!-- ============================================================ -->
-<div id="welcome-page">
-
-    <!-- Kanvas animasi bintang & love -->
+<div id="welcome-page" class="hidden">
     <canvas id="welcome-canvas"></canvas>
-
-    <!-- Konten tengah welcome page -->
     <div class="welcome-content">
         <div class="welcome-badge">✨ Hari Istimewamu ✨</div>
         <h1 class="welcome-title">Selamat<br/>Ulang Tahun</h1>
         <h2 class="welcome-name" id="welcome-name-display"></h2>
         <p class="welcome-sub">Semoga hari ini menjadi hari yang paling indah<br/>dalam hidupmu, sayangku 🌸</p>
         <button id="btn-buka-kejutan" class="btn-primary pulse-btn" onclick="bukaKejutan()">
-            Buka Kejutan 🎁
+            Lihat Kejutannya 🎁
         </button>
     </div>
-
-    <!-- Dekorasi lingkaran blur -->
     <div class="blur-circle bc1"></div>
     <div class="blur-circle bc2"></div>
     <div class="blur-circle bc3"></div>
@@ -46,50 +161,36 @@
 <!-- ============================================================ -->
 <div id="main-page" class="hidden">
 
-    <!-- ---- FALLING HEARTS CONTAINER ---- -->
     <div id="hearts-container"></div>
 
-    <!-- ---- MUSIC PLAYER ---- -->
     <div id="music-player">
         <button id="btn-music" onclick="toggleMusic()" title="Play/Pause Musik">
             <span id="music-icon">♪</span>
         </button>
-        <span id="music-label">Lagu untuk kamu</span>
+        <span id="music-label">Lagu Cinta Kita</span>
     </div>
 
-    <!-- Audio elemen -->
     <audio id="bg-music" loop preload="auto">
         <source src="music.mp3" type="audio/mpeg" />
     </audio>
-    <!-- YouTube fallback player (hidden) -->
-    <iframe id="yt-fallback" 
-        src="https://www.youtube.com/embed/yvzSAkrVeAs?autoplay=0&loop=1&playlist=yvzSAkrVeAs&enablejsapi=1" 
-        style="display:none" 
-        allow="autoplay"
-        title="music">
+    <iframe id="yt-fallback"
+        src="https://www.youtube.com/embed/yvzSAkrVeAs?autoplay=0&loop=1&playlist=yvzSAkrVeAs&enablejsapi=1"
+        style="display:none" allow="autoplay" title="music">
     </iframe>
 
-    <!-- ============================================================ -->
-    <!-- SECTION 1: HERO / UCAPAN                                     -->
-    <!-- ============================================================ -->
     <section id="section-hero" class="section">
         <div class="container">
             <div class="hero-inner">
-                <!-- Foto utama / slideshow -->
                 <div class="slideshow-wrapper" data-aos="fade-right">
                     <div class="slideshow" id="slideshow">
                         <img src="1.jpeg" class="slide active" alt="Foto 1" />
                         <img src="2.jpeg" class="slide"        alt="Foto 2" />
                         <img src="3.jpeg" class="slide"        alt="Foto 3" />
-
                         <button class="slide-btn prev" onclick="changeSlide(-1)">&#8249;</button>
                         <button class="slide-btn next" onclick="changeSlide(1)">&#8250;</button>
-
                         <div class="slide-dots" id="slide-dots"></div>
                     </div>
                 </div>
-
-                <!-- Ucapan utama -->
                 <div class="hero-text" data-aos="fade-left">
                     <span class="section-tag">🎂 Hari Spesialmu</span>
                     <h2 class="hero-title">
@@ -97,7 +198,7 @@
                         <em id="hero-name-display"></em>
                     </h2>
                     <p class="hero-desc">
-                        Kamu punya peran penting di hari-hariku, 
+                        Kamu punya peran penting di hari-hariku,
                         bikin semuanya terasa lebih ringan, dan selalu jadi tempat yang nyaman buatku.
                     </p>
                     <p class="hero-desc">
@@ -105,8 +206,6 @@
                         segala doamu dikabulkan, dan kebahagiaan selalu menemanimu
                         di setiap langkah.🌹
                     </p>
-
-                    <!-- Tombol Surat Cinta -->
                     <button class="btn-love" onclick="bukaSurat()">
                         Baca Suratnya yaa 💌
                     </button>
@@ -115,9 +214,6 @@
         </div>
     </section>
 
-    <!-- ============================================================ -->
-    <!-- FOOTER                                                       -->
-    <!-- ============================================================ -->
     <footer id="footer">
         <div class="footer-hearts">💖 💕 💗 💓 💞</div>
         <h3 class="footer-title" id="footer-title-display"></h3>
@@ -125,51 +221,34 @@
         <p class="footer-year" id="footer-year-display"></p>
     </footer>
 
-</div><!-- #main-page -->
+</div>
 
 
-<!-- ============================================================ -->
-<!-- POPUP: SURAT CINTA                                           -->
-<!-- ============================================================ -->
+<!-- POPUP SURAT -->
 <div id="popup-surat" class="popup-overlay hidden" onclick="tutupSurat(event)">
     <div class="popup-box" id="popup-box-surat">
         <button class="popup-close" onclick="tutupSurat()">✕</button>
-
         <div class="popup-header">
             <div class="popup-icon">💌</div>
             <h3 class="popup-title">Surat Untukmu</h3>
             <p class="popup-date" id="surat-date"></p>
         </div>
-
         <div class="popup-content">
             <p id="surat-opening"></p>
-            <p>
-                Setiap ngobrol sama kamu itu selalu jadi hal yang menyenangkan, 
-                walaupun kita cuma kenal dari online dan belum pernah ketemu langsung.
-            </p>
-            <p>
-                Aku gak nyangka, dari awalnya cuma chat biasa, bisa jadi sesering ini tukar cerita. 
-                Kamu tuh enak diajak ngobrol, dan kadang bisa bikin hari yang biasa aja jadi lebih seru.
-            </p>
-            <p>
-                Di hari ulang tahunmu ini, aku cuma mau doain yang terbaik buat kamu. 
-                Semoga semua hal yang kamu lagi usahain bisa berjalan lancar, dan semoga kamu selalu punya alasan buat senyum.
-            </p>
-            <p>
-                Walaupun kita belum pernah ketemu, aku tetap bersyukur bisa kenal kamu sejauh ini.
-            </p>
-            <p>
-                Selamat ulang tahun ya. Semoga harimu menyenangkan dan penuh hal-hal baik 🎉
-            </p>
+            <p>Setiap ngobrol sama kamu itu selalu jadi hal yang menyenangkan,
+            walaupun kita cuma kenal dari online dan belum pernah ketemu langsung.</p>
+            <p>Aku gak nyangka, dari awalnya cuma chat biasa, bisa jadi sesering ini tukar cerita.
+            Kamu tuh enak diajak ngobrol, dan kadang bisa bikin hari yang biasa aja jadi lebih seru.</p>
+            <p>Di hari ulang tahunmu ini, aku cuma mau doain yang terbaik buat kamu.
+            Semoga semua hal yang kamu lagi usahain bisa berjalan lancar, dan semoga kamu selalu punya alasan buat senyum.</p>
+            <p>Walaupun kita belum pernah ketemu, aku tetap bersyukur bisa kenal kamu sejauh ini.</p>
+            <p>Selamat ulang tahun ya. Semoga harimu menyenangkan dan penuh hal-hal baik 🎉</p>
             <p class="letter-sign" id="surat-sign"></p>
         </div>
     </div>
 </div>
 
-
-<!-- ============================================================ -->
-<!-- LIGHTBOX GALERI                                              -->
-<!-- ============================================================ -->
+<!-- LIGHTBOX -->
 <div id="lightbox" class="popup-overlay hidden" onclick="tutupLightbox()">
     <div class="lightbox-box">
         <button class="popup-close" onclick="tutupLightbox()">✕</button>
@@ -178,15 +257,7 @@
     </div>
 </div>
 
-
-<!-- ============================================================ -->
-<!-- CONFETTI CONTAINER                                           -->
-<!-- ============================================================ -->
 <div id="confetti-container"></div>
-
-
-<!-- Script utama -->
 <script src="script.js"></script>
-
 </body>
 </html>
