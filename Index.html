@@ -1,29 +1,9 @@
-<?php
-// ============================================================
-// index.php — Halaman Utama Website Ulang Tahun
-// ============================================================
-
-// Include data pesan ucapan dari PHP backend
-require_once 'messages.php';
-
-// ============================================================
-// KONFIGURASI — Edit bagian ini sesuai kebutuhan
-// ============================================================
-$config = [
-    'nama'           => 'CC',          // Nama pacar
-    'nama_pengirim'  => 'Larendra',            // Nama pengirim
-    'tanggal_lahir'  => '2008-04-21',      // Format: YYYY-MM-DD (ulang tahun hari ini)
-];
-
-// Ambil pesan ucapan dari array (backend PHP)
-$messages = getMessages();
-?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Selamat Ulang Tahun <?= htmlspecialchars($config['nama']) ?> 🎂</title>
+    <title>Selamat Ulang Tahun 🎂</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -47,7 +27,7 @@ $messages = getMessages();
     <div class="welcome-content">
         <div class="welcome-badge">✨ Hari Istimewamu ✨</div>
         <h1 class="welcome-title">Selamat<br/>Ulang Tahun</h1>
-        <h2 class="welcome-name"><?= htmlspecialchars($config['nama']) ?></h2>
+        <h2 class="welcome-name" id="welcome-name-display"></h2>
         <p class="welcome-sub">Semoga hari ini menjadi hari yang paling indah<br/>dalam hidupmu, sayangku 🌸</p>
         <button id="btn-buka-kejutan" class="btn-primary pulse-btn" onclick="bukaKejutan()">
             Buka Kejutan 🎁
@@ -74,21 +54,12 @@ $messages = getMessages();
         <button id="btn-music" onclick="toggleMusic()" title="Play/Pause Musik">
             <span id="music-icon">♪</span>
         </button>
-        <span id="music-label"><div class="play-btn" onclick="toggleMusic()"></div>
-
-<audio id="music">
-    <source src="lagu.mp3" type="audio/mp3">
-</audio></span>
+        <span id="music-label">Lagu Cinta Kita</span>
     </div>
 
-    <!-- Audio elemen (ganti src dengan lagu romantis) -->
+    <!-- Audio elemen -->
     <audio id="bg-music" loop>
-        <!--
-            Ganti src di bawah ini dengan URL lagu romantis kamu,
-            misalnya: src="musik/lagu.mp3"
-            File audio bisa diletakkan di folder /musik/
-        -->
-        <source src="Stephen Sanchez - Until I Found You (Lyrics) - (320 Kbps).mp3" type="audio/mpeg" />
+        <source src="Stephen_Sanchez_-_Until_I_Found_You__Lyrics__-__320_Kbps_.mp3" type="audio/mpeg" />
     </audio>
 
     <!-- ============================================================ -->
@@ -100,13 +71,9 @@ $messages = getMessages();
                 <!-- Foto utama / slideshow -->
                 <div class="slideshow-wrapper" data-aos="fade-right">
                     <div class="slideshow" id="slideshow">
-                        <!--
-                            Ganti src gambar di bawah dengan foto asli.
-                            Taruh foto di folder /foto/ lalu ubah src="foto/foto1.jpg"
-                        -->
-                        <img src="1.jpeg"   class="slide active" alt="Foto 1" />
+                        <img src="1.jpeg" class="slide active" alt="Foto 1" />
                         <img src="2.jpeg" class="slide"        alt="Foto 2" />
-                        <img src="3.jpeg"   class="slide"        alt="Foto 3" />
+                        <img src="3.jpeg" class="slide"        alt="Foto 3" />
 
                         <button class="slide-btn prev" onclick="changeSlide(-1)">&#8249;</button>
                         <button class="slide-btn next" onclick="changeSlide(1)">&#8250;</button>
@@ -120,7 +87,7 @@ $messages = getMessages();
                     <span class="section-tag">🎂 Hari Spesialmu</span>
                     <h2 class="hero-title">
                         Happy Birthday,<br/>
-                        <em><?= htmlspecialchars($config['nama']) ?></em>
+                        <em id="hero-name-display"></em>
                     </h2>
                     <p class="hero-desc">
                         Kamu punya peran penting di hari-hariku, 
@@ -146,13 +113,9 @@ $messages = getMessages();
     <!-- ============================================================ -->
     <footer id="footer">
         <div class="footer-hearts">💖 💕 💗 💓 💞</div>
-        <h3 class="footer-title">
-            Dari aku untukmu, <?= htmlspecialchars($config['nama']) ?> 🌹
-        </h3>
-        <p class="footer-from">
-            — Dengan sepenuh hati, <?= htmlspecialchars($config['nama_pengirim']) ?>
-        </p>
-        <p class="footer-year"><?= date('Y') ?> · Dibuat khusus untukmu ✨</p>
+        <h3 class="footer-title" id="footer-title-display"></h3>
+        <p class="footer-from" id="footer-from-display"></p>
+        <p class="footer-year" id="footer-year-display"></p>
     </footer>
 
 </div><!-- #main-page -->
@@ -168,13 +131,11 @@ $messages = getMessages();
         <div class="popup-header">
             <div class="popup-icon">💌</div>
             <h3 class="popup-title">Surat Untukmu</h3>
-            <p class="popup-date"><?= date('d F Y') ?></p>
+            <p class="popup-date" id="surat-date"></p>
         </div>
 
         <div class="popup-content">
-            <p>
-                <?= htmlspecialchars($config['nama']) ?> sayang,
-            </p>
+            <p id="surat-opening"></p>
             <p>
                 Setiap ngobrol sama kamu itu selalu jadi hal yang menyenangkan, 
                 walaupun kita cuma kenal dari online dan belum pernah ketemu langsung.
@@ -193,10 +154,7 @@ $messages = getMessages();
             <p>
                 Selamat ulang tahun ya. Semoga harimu menyenangkan dan penuh hal-hal baik 🎉
             </p>
-            <p class="letter-sign">
-                Dari aku yang selalu mendoakan yang terbaik buatmu,<br/>
-                <em><?= htmlspecialchars($config['nama_pengirim']) ?> 💖</em>
-            </p>
+            <p class="letter-sign" id="surat-sign"></p>
         </div>
     </div>
 </div>
