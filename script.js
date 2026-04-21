@@ -5,8 +5,8 @@
    ============================================================ */
 const params        = new URLSearchParams(window.location.search);
 const config = {
-    nama:         params.get('nama')  || 'CC',   // ?nama=Sinta
-    nama_pengirim: params.get('dari') || 'Larendra',      // ?dari=Raka
+    nama:         params.get('CC')  || 'CC',   // ?nama=Sinta
+    nama_pengirim: params.get('Larendra') || 'Larendra',      // ?dari=Raka
 };
 
 /* ============================================================
